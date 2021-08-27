@@ -1,5 +1,11 @@
 mod api;
-use actix_web::{post, web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+use std::env;
+
+#[get("/")]
+async fn index() -> impl Responder {
+    HttpResponse::Ok().body("Beyond Identity SDK Backend")
+}
 
 #[post("/users")]
 async fn create_user(request: web::Json<api::create_user::Request>) -> impl Responder {
@@ -19,8 +25,14 @@ async fn recover_user(request: web::Json<api::recover_user::Request>) -> impl Re
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| App::new().service(create_user).service(recover_user))
-        .bind("127.0.0.1:8080")?
-        .run()
-        .await
+    let port = env::var("PORT").unwrap_or_else(|_| "8080".to_string());
+    HttpServer::new(|| {
+        App::new()
+            .service(index)
+            .service(create_user)
+            .service(recover_user)
+    })
+    .bind(format!("0.0.0.0:{}", port))?
+    .run()
+    .await
 }
