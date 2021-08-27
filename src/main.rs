@@ -1,4 +1,6 @@
 mod api;
+mod utils;
+
 use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
 use std::env;
 
@@ -11,7 +13,7 @@ async fn index() -> impl Responder {
 async fn create_user(request: web::Json<api::create_user::Request>) -> impl Responder {
     match api::create_user::handle(request.0).await {
         Ok(response) => HttpResponse::Ok().json(response),
-        Err(e) => HttpResponse::Ok().body(format!("{}", e)),
+        Err(e) => HttpResponse::from_error(e),
     }
 }
 
@@ -19,7 +21,7 @@ async fn create_user(request: web::Json<api::create_user::Request>) -> impl Resp
 async fn recover_user(request: web::Json<api::recover_user::Request>) -> impl Responder {
     match api::recover_user::handle(request.0).await {
         Ok(response) => HttpResponse::Ok().json(response),
-        Err(e) => HttpResponse::Ok().body(format!("{}", e)),
+        Err(e) => HttpResponse::from_error(e),
     }
 }
 

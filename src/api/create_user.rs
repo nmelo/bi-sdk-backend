@@ -1,11 +1,7 @@
+use crate::utils::{error::GenericError, result::Result};
 use serde::{Deserialize, Serialize};
-use std::env;
-use std::error;
-use std::fmt;
 
 // -- Create User
-
-type Result<T> = std::result::Result<T, Box<dyn error::Error>>;
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Request {
@@ -27,19 +23,8 @@ pub struct Response {
 	status: String,
 }
 
-#[derive(Debug)]
-struct GenericError(String);
-
-impl error::Error for GenericError {}
-
-impl fmt::Display for GenericError {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "{}", self.0)
-	}
-}
-
 pub async fn handle(request: Request) -> Result<Response> {
-	let api_token = env::var("API_TOKEN")?;
+	let api_token = std::env::var("API_TOKEN")?;
 	let serialized_request = serde_json::to_string(&request)?;
 
 	let response = reqwest::Client::new()
