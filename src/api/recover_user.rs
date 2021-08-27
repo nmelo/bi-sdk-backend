@@ -3,7 +3,7 @@ use std::env;
 use std::error;
 use std::fmt;
 
-// -- Create User
+// -- Recover User
 
 type Result<T> = std::result::Result<T, Box<dyn error::Error>>;
 
