@@ -4,10 +4,10 @@ use serde::{Deserialize, Serialize};
 // -- Recover User
 
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "snake_case")]
-pub enum Request {
-	ExternalId(String),
-	InternalId(String),
+pub struct Request {
+	binding_token_delivery_method: String,
+	external_id: Option<String>,
+	internal_id: Option<String>,
 }
 
 #[derive(Deserialize, Serialize)]
@@ -27,7 +27,7 @@ pub async fn handle(request: Request) -> Result<Response> {
 	let serialized_request = serde_json::to_string(&request)?;
 
 	let response = reqwest::Client::new()
-		.post("https://api.byndid.com/v0/recover-user")
+		.post("https://api.byndid.com/v1/manage/recover-user")
 		.header(
 			reqwest::header::AUTHORIZATION,
 			format!("Bearer {}", api_token),

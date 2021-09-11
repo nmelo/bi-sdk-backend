@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Request {
+	binding_token_delivery_method: String,
 	external_id: String,
 	email: String,
 	user_name: String,
@@ -28,7 +29,7 @@ pub async fn handle(request: Request) -> Result<Response> {
 	let serialized_request = serde_json::to_string(&request)?;
 
 	let response = reqwest::Client::new()
-		.post("https://api.byndid.com/v0/users")
+		.post("https://api.byndid.com/v1/manage/users")
 		.header(
 			reqwest::header::AUTHORIZATION,
 			format!("Bearer {}", api_token),
