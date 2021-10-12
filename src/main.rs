@@ -1,4 +1,5 @@
 mod api;
+mod models;
 mod utils;
 
 use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};

@@ -1,3 +1,4 @@
+use crate::models::user::User;
 use crate::utils::{error::GenericError, result::Result};
 use serde::{Deserialize, Serialize};
 
@@ -14,14 +15,7 @@ pub struct Request {
 
 #[derive(Deserialize, Serialize)]
 pub struct Response {
-	internal_id: String,
-	external_id: String,
-	email: String,
-	user_name: String,
-	display_name: String,
-	date_created: String,
-	date_modified: String,
-	status: String,
+	user: User,
 }
 
 pub async fn handle(request: Request) -> Result<Response> {
