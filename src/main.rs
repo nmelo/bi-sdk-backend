@@ -42,6 +42,8 @@ async fn main() -> std::io::Result<()> {
             .service(index)
             .service(create_user)
             .service(recover_user)
+            .service(auth_user)
+
     })
     .bind(format!("0.0.0.0:{}", port))?
     .run()
