@@ -1,0 +1,42 @@
+use crate::utils::{error::GenericError, result::Result};
+use serde::{Deserialize, Serialize};
+
+// -- Auth User
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct Request {
+	email: String,
+	password: String,
+    returnSecureToken: bool,
+}
+
+#[derive(Deserialize, Serialize)]
+pub struct Response {
+	idToken: String,
+    email: String,
+    refreshToken: String,
+    expiresIn: String,
+    localId: String,
+    registered: bool,
+}
+
+pub async fn handle(request: Request) -> Result<Response> {
+	let serialized_request = serde_json::to_string(&request)?;
+    
+	//let status = reqwest::StatusCode::OK;
+
+    let response = reqwest::Client::new()
+		.post("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA9u3r2oqM-q4T19YzMT1frTxVJJhjiXTA")
+		.body(serialized_request)
+		.send()
+		.await?;
+	let status = response.status();
+	let body = response.text().await?;
+	return match status {
+		reqwest::StatusCode::OK => {
+			let deserialized_response: Response = serde_json::from_str(&body)?;
+			return Ok(deserialized_response);
+		}
+		_ => Err(Box::new(GenericError(body.into()))),
+	};
+}
