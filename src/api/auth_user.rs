@@ -27,7 +27,7 @@ pub async fn handle(request: Request) -> Result<Response> {
 	//let status = reqwest::StatusCode::OK;
 
     let response = reqwest::Client::new()
-		.post(format("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={}", api_key))
+		.post(format!("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={}", api_key))
 		.body(serialized_request)
 		.send()
 		.await?;
