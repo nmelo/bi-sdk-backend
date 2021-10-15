@@ -21,12 +21,13 @@ pub struct Response {
 }
 
 pub async fn handle(request: Request) -> Result<Response> {
+    let api_key = std::env::var("FIREBASE_API_KEY")?;
 	let serialized_request = serde_json::to_string(&request)?;
     
 	//let status = reqwest::StatusCode::OK;
 
     let response = reqwest::Client::new()
-		.post("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyA9u3r2oqM-q4T19YzMT1frTxVJJhjiXTA")
+		.post(format("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={}", api_key))
 		.body(serialized_request)
 		.send()
 		.await?;
