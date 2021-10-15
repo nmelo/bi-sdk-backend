@@ -13,6 +13,10 @@
 		"API_TOKEN": {
 			"description": "The token required to access the Beyond Identity API",
 			"value": ""
+		},
+		"FIREBASE_API_KEY": {
+			"description": "The Firebase API key of the Firebase account you wish to you for legacy password auth",
+			"value": ""
 		}
 	}
 }
