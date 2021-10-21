@@ -15,7 +15,7 @@
 			"value": ""
 		},
 		"FIREBASE_API_KEY": {
-			"description": "The Firebase API key of the Firebase account you wish to you for legacy password auth",
+			"description": "The Firebase API key of the Firebase account you wish to use for legacy password auth",
 			"value": ""
 		}
 	}

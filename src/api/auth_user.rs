@@ -5,14 +5,14 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Request {
-	email: String,
-	password: String,
+    email: String,
+    password: String,
     returnSecureToken: bool,
 }
 
 #[derive(Deserialize, Serialize)]
 pub struct Response {
-	idToken: String,
+    idToken: String,
     email: String,
     refreshToken: String,
     expiresIn: String,
@@ -22,22 +22,22 @@ pub struct Response {
 
 pub async fn handle(request: Request) -> Result<Response> {
     let api_key = std::env::var("FIREBASE_API_KEY")?;
-	let serialized_request = serde_json::to_string(&request)?;
-    
-	//let status = reqwest::StatusCode::OK;
-
+    let serialized_request = serde_json::to_string(&request)?;
     let response = reqwest::Client::new()
-		.post(format!("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={}", api_key))
-		.body(serialized_request)
-		.send()
-		.await?;
-	let status = response.status();
-	let body = response.text().await?;
-	return match status {
-		reqwest::StatusCode::OK => {
-			let deserialized_response: Response = serde_json::from_str(&body)?;
-			return Ok(deserialized_response);
-		}
-		_ => Err(Box::new(GenericError(body.into()))),
-	};
+        .post(format!(
+            "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={}",
+            api_key
+        ))
+        .body(serialized_request)
+        .send()
+        .await?;
+    let status = response.status();
+    let body = response.text().await?;
+    return match status {
+        reqwest::StatusCode::OK => {
+            let deserialized_response: Response = serde_json::from_str(&body)?;
+            return Ok(deserialized_response);
+        }
+        _ => Err(Box::new(GenericError(body.into()))),
+    };
 }
