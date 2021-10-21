@@ -1,31 +1,33 @@
-use crate::models::user::User;
 use crate::utils::{error::GenericError, result::Result};
 use serde::{Deserialize, Serialize};
 
-// -- Recover User
+// -- Auth User
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Request {
-    binding_token_delivery_method: String,
-    external_id: Option<String>,
-    internal_id: Option<String>,
+    email: String,
+    password: String,
+    returnSecureToken: bool,
 }
 
 #[derive(Deserialize, Serialize)]
 pub struct Response {
-    user: User,
+    idToken: String,
+    email: String,
+    refreshToken: String,
+    expiresIn: String,
+    localId: String,
+    registered: bool,
 }
 
 pub async fn handle(request: Request) -> Result<Response> {
-    let api_token = std::env::var("API_TOKEN")?;
+    let api_key = std::env::var("FIREBASE_API_KEY")?;
     let serialized_request = serde_json::to_string(&request)?;
-
     let response = reqwest::Client::new()
-        .post("https://api.byndid.com/v1/manage/recover-user")
-        .header(
-            reqwest::header::AUTHORIZATION,
-            format!("Bearer {}", api_token),
-        )
+        .post(format!(
+            "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={}",
+            api_key
+        ))
         .body(serialized_request)
         .send()
         .await?;
