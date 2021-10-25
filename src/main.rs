@@ -2,6 +2,7 @@ mod api;
 mod models;
 mod utils;
 
+use actix_cors::Cors;
 use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
 use std::env;
 
@@ -39,6 +40,7 @@ async fn main() -> std::io::Result<()> {
     let port = env::var("PORT").unwrap_or_else(|_| "8080".to_string());
     HttpServer::new(|| {
         App::new()
+            .wrap(Cors::permissive())
             .service(index)
             .service(create_user)
             .service(recover_user)
