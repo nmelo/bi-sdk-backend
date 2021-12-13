@@ -11,6 +11,12 @@ async fn index() -> impl Responder {
     HttpResponse::Ok().body("Beyond Identity SDK Backend")
 }
 
+#[get("/public-client")]
+async fn public_client() -> impl Responder {
+    let clientId = std::env::var("PUBLIC_CLIENT_ID").unwrap();
+    HttpResponse::Ok().body(clientId)
+}
+
 #[post("/users")]
 async fn create_user(request: web::Json<api::create_user::Request>) -> impl Responder {
     match api::create_user::handle(request.0).await {
@@ -42,6 +48,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(Cors::permissive())
             .service(index)
+            .service(public_client)
             .service(create_user)
             .service(recover_user)
             .service(auth_user)
